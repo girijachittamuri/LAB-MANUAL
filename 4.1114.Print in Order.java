@@ -1,25 +1,37 @@
 class Foo {
 
-    private int n = 1;
+    private int turn = 1;
 
     public Foo() {
     }
 
-    public void first(Runnable printFirst) {
+    public synchronized void first(Runnable printFirst)
+            throws InterruptedException {
+
         printFirst.run();
-        n = 2;
+        turn = 2;
+        notifyAll();
     }
 
-    public void second(Runnable printSecond) {
-        while (n != 2) {
+    public synchronized void second(Runnable printSecond)
+            throws InterruptedException {
+
+        while (turn != 2) {
+            wait();
         }
+
         printSecond.run();
-        n = 3;
+        turn = 3;
+        notifyAll();
     }
 
-    public void third(Runnable printThird) {
-        while (n != 3) {
+    public synchronized void third(Runnable printThird)
+            throws InterruptedException {
+
+        while (turn != 3) {
+            wait();
         }
+
         printThird.run();
     }
 }
